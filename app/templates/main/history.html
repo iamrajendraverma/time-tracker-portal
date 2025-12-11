@@ -13,7 +13,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>User ID</th> <!-- Might be relevant for "All History" -->
+                    <th>Username</th> <!-- Might be relevant for "All History" -->
                     <th>Date</th>
                     <th>Punch In</th>
                     <th>Punch Out</th>
@@ -25,7 +25,7 @@
                 <tr>
                     {% if log is mapping %}
                     <td style="color: var(--text-muted); font-size: 0.9em;">
-                        {{ log.get('user_id') or log.get('username') or 'Me' }}
+                        {{ log.get('username') or log.get('user_id') or 'Me' }}
                     </td>
                     <td>{{ log.get('date') }}</td>
                     <td>{{ log.get('punch_in') }}</td>

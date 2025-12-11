@@ -104,13 +104,8 @@ def users():
     try:
         res_all = client.get_all_users()
         users_data = res_all.json() if res_all.status_code == 200 else []
-        if isinstance(users_data, list):
-            all_users = users_data
-        elif isinstance(users_data, dict):
-            all_users = users_data.get('users') or users_data.get('data') or []
-        else:
-            all_users = []
-        
+        all_users = DataAdapter.get_all_users(users_data)
+
         res_active = client.get_active_users()
         active_data = res_active.json() if res_active.status_code == 200 else []
         if isinstance(active_data, list):

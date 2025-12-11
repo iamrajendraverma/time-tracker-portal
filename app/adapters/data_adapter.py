@@ -54,9 +54,11 @@ class DataAdapter:
                     dt_start = datetime.fromisoformat(h['start_ist'])
                     item['date'] = dt_start.strftime('%b %d, %Y')
                     item['punch_in'] = dt_start.strftime('%I:%M %p')
+                    item['sort_timestamp'] = dt_start
                 else:
                     item['date'] = h.get('date') # Fallback if API changed
                     item['punch_in'] = h.get('punch_in')
+                    item['sort_timestamp'] = datetime.min
 
                 # Calculate friendly punch_out from end_ist
                 if h.get('end_ist'):
@@ -78,7 +80,10 @@ class DataAdapter:
             
             history.append(item)
             
-        return user, status, history
+        # Sort by timestamp descending
+        history.sort(key=lambda x: x.get('sort_timestamp', datetime.min), reverse=True)
+
+        return user, status, history[:5]
     @staticmethod
     def history_data(history_data):
         # Parse the history data structure which contains a list of users, each with their history
@@ -109,9 +114,11 @@ class DataAdapter:
                         dt_start = datetime.fromisoformat(h['start_ist'])
                         item['date'] = dt_start.strftime('%b %d, %Y')
                         item['punch_in'] = dt_start.strftime('%I:%M %p')
+                        item['sort_timestamp'] = dt_start
                     else:
                         item['date'] = h.get('date', '-')
                         item['punch_in'] = h.get('punch_in', '-')
+                        item['sort_timestamp'] = datetime.min
 
                     # Calculate friendly punch_out from end_ist
                     if h.get('end_ist'):
@@ -133,4 +140,18 @@ class DataAdapter:
                 
                 all_history.append(item)
         
+        # Sort by timestamp descending
+        all_history.sort(key=lambda x: x.get('sort_timestamp', datetime.min), reverse=True)
+        
         return all_history
+    @staticmethod    
+    def get_all_users(raw_users):
+        users = []
+        raw_users = raw_users.get('users')
+        for user in raw_users:
+            if not isinstance(user, dict):
+                continue
+            username = user.get('username')
+            user_id = user.get('user_id')
+            users.append({'username': username, 'id': user_id})
+        return users

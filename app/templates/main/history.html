@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}History - TimePortal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Punch History</h1>
+</div>
+
+<div class="glass-card">
+    {% if history %}
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>User ID</th> <!-- Might be relevant for "All History" -->
+                    <th>Date</th>
+                    <th>Punch In</th>
+                    <th>Punch Out</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in history %}
+                <tr>
+                    {% if log is mapping %}
+                    <td style="color: var(--text-muted); font-size: 0.9em;">
+                        {{ log.get('user_id') or log.get('username') or 'Me' }}
+                    </td>
+                    <td>{{ log.get('date') }}</td>
+                    <td>{{ log.get('punch_in') }}</td>
+                    <td>{{ log.get('punch_out') or '-' }}</td>
+                    <td>{{ log.get('duration') or '-' }}</td>
+                    {% else %}
+                    <td colspan="5">{{ log }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="text-align: center; color: var(--text-muted); padding: 3rem;">No history records found.</p>
+    {% endif %}
+</div>
+{% endblock %}

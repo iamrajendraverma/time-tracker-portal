@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Users - TimePortal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Users Directory</h1>
+</div>
+
+<div class="dashboard-grid">
+    <div class="glass-card" style="grid-column: span 2;">
+        <h3>Active Users</h3>
+        {% if active_users %}
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+            {% for user in active_users %}
+            {% set username = user if user is string else user.get('username') %}
+            <div
+                style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 12px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 1rem;">
+                <div
+                    style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color); display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                    {{ username[0] | upper }}
+                </div>
+                <div>
+                    <div style="font-weight: 500;">{{ username }}</div>
+                    <div style="font-size: 0.8rem; color: var(--success-color);">Active Now</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p style="color: var(--text-muted); padding: 1rem 0;">No active users at the moment.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="glass-card" style="margin-top: 2rem;">
+    <h3>All Users</h3>
+    {% if all_users %}
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Status</th> <!-- If available -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in all_users %}
+                <tr>
+                    <td>{{ user.get('id') }}</td>
+                    <td>{{ user.get('username') }}</td>
+                    <td>
+                        <span class="status-badge bg-success">Member</span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No users found.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Time Portal{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="{{ url_for('main.dashboard') }}" class="logo">TimePortal</a>
+                <div class="nav-links">
+                    {% if session.get('token') %}
+                        <a href="{{ url_for('main.dashboard') }}">Dashboard</a>
+                        <a href="{{ url_for('main.history') }}">History</a>
+                        <a href="{{ url_for('main.users') }}">Users</a>
+                    {% endif %}
+                </div>
+                <div class="auth-buttons">
+                    {% if session.get('token') %}
+                         <span style="margin-right: 15px; color: var(--text-muted);">Hi, {{ session.get('username') }}</span>
+                        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" style="margin-right: 1rem;">Login</a>
+                        <a href="{{ url_for('auth.signup') }}" class="btn btn-primary">Sign Up</a>
+                    {% endif %}
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="flash-messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash-msg flash-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

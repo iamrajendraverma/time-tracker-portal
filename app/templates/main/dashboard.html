@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - TimePortal{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1
+        style="background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        Dashboard</h1>
+    <div class="date-display" style="color: var(--text-muted); font-size: 1.1rem;">
+        {{ status.get('date', 'Today') }}
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <!-- Status Card -->
+    <div class="glass-card stat-card">
+        <h3 style="color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px;">Current
+            Status</h3>
+        <div class="stat-value">
+            {% if 'in' in status.get('status', '')|lower %}
+            <span class="punch-status-in">Punched In</span>
+            {% else %}
+            <span class="punch-status-out">Punched Out</span>
+            {% endif %}
+        </div>
+        <div class="actions">
+            {% if 'in' in status.get('status', '')|lower %}
+            <form action="{{ url_for('main.punch_out') }}" method="POST">
+                <button type="submit" class="btn btn-danger" style="padding: 1rem 3rem; font-size: 1.2rem;">Punch
+                    Out</button>
+            </form>
+            {% else %}
+            <form action="{{ url_for('main.punch_in') }}" method="POST">
+                <button type="submit" class="btn btn-primary" style="padding: 1rem 3rem; font-size: 1.2rem;">Punch
+                    In</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- User Info Card -->
+    <div class="glass-card" style="padding: 2rem;">
+        <h3 style="margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">My
+            Profile</h3>
+        <div style="font-size: 1.1rem;">
+            <p style="margin-bottom: 1rem;"><span style="color: var(--text-muted); margin-right: 10px;">Username:</span>
+                {{ user.get('username') }}</p>
+            <p style="margin-bottom: 1rem;"><span style="color: var(--text-muted); margin-right: 10px;">ID:</span> {{
+                user.get('id') }}</p>
+            <!-- Add more fields if available from API -->
+        </div>
+    </div>
+</div>
+
+<div class="glass-card" style="margin-top: 2rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3>Recent Activity</h3>
+        <a href="{{ url_for('main.history') }}" style="color: var(--primary-color); font-size: 0.9rem;">View All</a>
+    </div>
+
+    {% if history %}
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Punch In</th>
+                    <th>Punch Out</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in history[:5] %}
+                <tr>
+                    <td>{{ log.get('date') }}</td>
+                    <td>{{ log.get('punch_in') }}</td>
+                    <td>{{ log.get('punch_out') or '-' }}</td>
+                    <td>{{ log.get('duration') or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="text-align: center; color: var(--text-muted); padding: 2rem;">No recent history found.</p>
+    {% endif %}
+</div>
+{% endblock %}
